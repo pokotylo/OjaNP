@@ -5,33 +5,36 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-//using namespace std; //df
-
 extern bool debug;
 extern bool trace;
 extern bool verbose;
 extern bool quiet;
 extern bool adaptive;
 
-#ifndef _MSC_VER
-#include <Rcpp.h> 
-#define cout Rcpp::Rcout
-#endif
-
-#ifdef TO_FILE
-#define LOG(a) {}
-#define FLOG(a) {if(debug)fout << a << endl;}
+#ifdef _MSC_VER // VisualStudio
+	using namespace std;
+	#define LOG(a) {if(debug) cout << a << endl;}
+	#define LOGQ(a) {if(quiet) cout << a << endl;}
+	#define LOGIF(a,b) {if(debug && (a)) cout << b << endl;}
+	#define FLOG(a) {}
 #else
-#define LOG(a) {if(debug) cout << a << endl;}
-#define FLOG(a) {}
+	#include <Rcpp.h> 
+	#define LOG(a) {if(debug) Rcpp::Rcout << a << endl;}
+	#define LOGQ(a) {if(quiet) Rcpp::Rcout << a << endl;}
+	#define LOGIF(a,b) {if(debug && (a)) Rcpp::Rcout << b << endl;}
+	#define FLOG(a) {}
 #endif
 
 #define TRACE(a) {}//if(trace)cerr << a << endl;}
-#define LOGIF(a,b) {if(debug && (a)) cout << b << endl;}
 
-//#define LOG(a) {}
-//#define TRACE(a) {}
-//#define LOGIF(a,b) {}
+#ifdef TO_FILE
+	using namespace std;
+	#define LOG(a) {}
+	#define LOGIF(a,b) {}
+	#include <fstream>
+	#include <sstream>
+	#define FLOG(a) {if(debug)fout << a << endl;}
+#endif
 
 bool parse_arguments(int argc,char** argv);
 

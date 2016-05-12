@@ -37,7 +37,7 @@ extern "C"
 	//  data - data itself
 	//  vec_out - output vector depending on called function (median etc.)
 	//  mat_out - output matrix depending on called function (covariance etc.)
-	//  param1,param2,param3,param4 - miscellanous parameters to called function
+	//  param1,param2,param3,param4 - miscellaneous parameters to called function
     //  func - function to call:
 	//         1 = calculate oja median (vec_out) using exact algorithm
 	//             param1 = maximum number of lines to follow.
@@ -70,6 +70,7 @@ extern "C"
 
 		debug=(int)(*dbg != 0);
 		verbose=(*dbg != 0);
+		quiet = *dbg == 2; if (quiet) debug = 0;
 		
 		set_random_seed();
 		

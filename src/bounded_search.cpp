@@ -32,11 +32,7 @@
 
 #include "bitset"
 
-using namespace std;
-
 #include <ctime>
-#include <fstream>
-#include <sstream>
 
 double inline dist(Point p1, Point p2)
 {
@@ -211,9 +207,9 @@ OjaPoint OjaData::medianFollowIntersectionLinesBounded()	//AP
 	stringstream filename; 
 	filename << "D:\\OjaExperiments\\" << dim() << " " << size() << " (" << (*this)[0][0] << ") " << volume << ".txt";
 	ofstream fout(filename.str().c_str());	
-
-	FLOG("d: " << dim()); FLOG("n: " << size()); FLOG("volume: " << volume); FLOG("");
 #endif
+
+	LOG("d: " << dim()); LOG("n: " << size()); LOG("volume: " << volume); LOG("");
 	clock_t begin = clock();
 
 	/* 1.*/
@@ -222,7 +218,7 @@ OjaPoint OjaData::medianFollowIntersectionLinesBounded()	//AP
 
 	clock_t hp_generated = clock();
 
-	FLOG("hp generated " << double(hp_generated - begin) / CLOCKS_PER_SEC);
+	LOG("hp generated " << double(hp_generated - begin) / CLOCKS_PER_SEC);
 
 	/* 1.1 Get bounds */
 
@@ -307,7 +303,7 @@ if (false)	// Approach B go along the gradients
 if (false) //Approach D build bounds at once, reduce length
 {
 #pragma region go along the gradients (any start point)
-	FLOG("Building gradients");
+	LOG("Building gradients");
 	//Going along the gradients as long as they are getting smaller
 	Point p = average();	// starting point
 	double d = DOUBLE_XMAX;
@@ -323,7 +319,7 @@ if (false) //Approach D build bounds at once, reduce length
 		if (d1 == 0){
 			OjaPoint T(this);
 			T.set_location(p);
-			FLOG("Zero gradient found in point " << p);
+			LOG("Zero gradient found in point " << p);
 			return T;
 		}
 
@@ -348,7 +344,6 @@ if (false) //Approach D build bounds at once, reduce length
 		volume = getVolume(bmin, bmax);
 
 		LOG(k << " Min " << bmin << "; Max " << bmax << "; size: " << bmax - bmin << " (" << volume / initvol << "); bounds: " << bounds.size());
-		FLOG(k << " Min " << bmin << "; Max " << bmax << "; size: " << bmax - bmin << " (" << volume / initvol << "); bounds: " << bounds.size());
 		k++;
 
 		p = p1;
@@ -361,7 +356,7 @@ if (false) //Approach D build bounds at once, reduce length
 if (false) //Approach D build bounds at half of gradient
 {
 #pragma region go along the gradients (any start point)
-	FLOG("Building gradients");
+	LOG("Building gradients");
 	//Going along the gradients as long as they are getting smaller
 	Point p = average();	// starting point
 	Hyperplane b1;
@@ -375,7 +370,7 @@ if (false) //Approach D build bounds at half of gradient
 		if (p1 == p){
 			OjaPoint T(this);
 			T.set_location(p);
-			FLOG("Zero gradient found in point " << p);
+			LOG("Zero gradient found in point " << p);
 			return T;
 		}
 
@@ -400,7 +395,6 @@ if (false) //Approach D build bounds at half of gradient
 		volume = getVolume(bmin, bmax);
 
 		LOG(k << " Min " << bmin << "; Max " << bmax << "; size: " << bmax - bmin << " (" << volume / initvol << "); bounds: " << bounds.size());
-		FLOG(k << " Min " << bmin << "; Max " << bmax << "; size: " << bmax - bmin << " (" << volume / initvol << "); bounds: " << bounds.size());
 		k++;
 	} while (volume / initvol > this->volume /*desired volume*/ && k < 100/*max cuts*/);
 #pragma endregion
@@ -424,13 +418,10 @@ if (true)	// Approach A. reducing procedure
 		volume = getVolume(bmin, bmax);
 
 		LOG(k << " Min " << bmin << "; Max " << bmax << "; size: " << bmax - bmin << " (" << volume / initvol << "); bounds: " << bounds.size());
-		FLOG(k << " Min " << bmin << "; Max " << bmax << "; size: " << bmax - bmin << " (" << volume / initvol << "); bounds: " << bounds.size());
-
 
 		Point g = -oja_rank(bmid);
 		if (g.length() < 1e-15) {
 			LOG("The median is found : " << bmid);
-			FLOG("The median is found : " << bmid);
 			OjaPoint pp; pp.set_location(bmid);
 			return pp;
 		}
@@ -447,7 +438,7 @@ if (true)	// Approach A. reducing procedure
 	bounded_min_max(crossing_points, used_crossing_points, bmin, bmax, bmid, dim());
 	set_bounded_min_max(bmin, bmax);
 
-	FLOG(k << " Min " << bmin << "; Max " << bmax << "; size: " << bmax - bmin << " (" << volume / initvol << "); bounds: " << bounds.size());
+	LOG(k << " Min " << bmin << "; Max " << bmax << "; size: " << bmax - bmin << " (" << volume / initvol << "); bounds: " << bounds.size());
 
 
 #pragma endregion
@@ -484,7 +475,6 @@ return pp;
 		}
 	}
 	LOG("Hyperplanes left: " << includedPlanes.size() << " out of  " << planes << " (" << round(100.0*includedPlanes.size() / planes, 0.01) << "%)");
-	FLOG("Hyperplanes left: " << includedPlanes.size() << " out of  " << planes << " (" << round(100.0*includedPlanes.size() / planes, 0.01) << "%)");
 	/*
 	for (int i = 0; i < bounds_crossing_indexes.size(); i++)
 	{
@@ -550,8 +540,7 @@ return pp;
 #pragma endregion
 
 	clock_t bb_generated = clock();
-	LOG("bounds generated " << double(bb_generated - begin) / CLOCKS_PER_SEC);
-	FLOG("bounds generated " << double(bb_generated - begin) / CLOCKS_PER_SEC);
+	LOG("bounds generated " << double(bb_generated - hp_generated) / CLOCKS_PER_SEC);
 
 	/* 2. */
 	OjaLine L(*this);
@@ -649,7 +638,6 @@ step10:
 	if (nL > max_searchlines)
 	{
 		LOG("Too many line possibilities (" << nL << ") at " << Tid);
-		FLOG("Too many line possibilities (" << nL << ") at " << Tid);
 		fail_count++;
 		goto step3;
 	}
@@ -743,15 +731,25 @@ step10:
 	}*/
 
 	LOG("! Minimum " << Tid << " (" << hatT.location() << ") (object function " << hatD << ")");
-	FLOG("! Minimum " << Tid << " (" << hatT.location() << ") (object function " << hatD << ")");
 
-#ifdef TO_FILE
 	clock_t end = clock();
 	double elapsed_secst = double(end - begin) / CLOCKS_PER_SEC;
+	double elapsed_secsb = double(bb_generated - hp_generated) / CLOCKS_PER_SEC;
+	double elapsed_secsc = double(end - bb_generated) / CLOCKS_PER_SEC;
 	double elapsed_secs = double(end - hp_generated) / CLOCKS_PER_SEC;
 
-	FLOG("counter: " << counter-1 << "\nTime total: " << elapsed_secst << "\nTime count: " << elapsed_secs);
+	LOG("counter: " << counter - 1 <<
+		"\nTime total: " << elapsed_secst <<
+		"\nTime bounds: " << elapsed_secsb <<
+		"\nTime count: " << elapsed_secsc <<
+		"\nTime sum: " << elapsed_secs);
+	LOGQ("counter: " << counter - 1 <<
+		"\nTime total: " << elapsed_secst <<
+		"\nTime bounds: " << elapsed_secsb <<
+		"\nTime count: " << elapsed_secsc <<
+		"\nTime sum: " << elapsed_secs);
 
+#ifdef TO_FILE
 	fout.close();
 #endif
 

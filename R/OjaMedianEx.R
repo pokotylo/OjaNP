@@ -1,7 +1,8 @@
 `ojaMedianEx` <- function(X, control=ojaMedianControl(...), ...){
 
     action <- 1
-    param2 <- param3 <- param4 <- debug <- 0
+    param2 <- param3 <- param4 <- 0
+    debug <- control$debug
     rows <- dim(X)[1]
     cols <- dim(X)[2]
     outvec <- c(1:cols)

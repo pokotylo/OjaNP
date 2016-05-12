@@ -33,21 +33,6 @@
 #endif
 
 #include <ctime>
-#include <fstream>
-#include <sstream>
-
-/*
-defined in "global.h"
-#define LOG(a) {if(debug)cout << a << endl;}
-//#define TRACE(a) {if(trace)cerr << a << endl;}
-//#define LOGIF(a,b) {if(debug && (a))cout << b << endl;}
-//#define LOG(a) {}
-#define TRACE(a) {}
-#define LOGIF(a,b) {}
-#define FLOG(a) {}//{if(0)fout << a << endl;}
-*/
-
-using namespace std;
 
 bool unique_median;
 
@@ -290,23 +275,23 @@ OjaPoint OjaData::medianFollowIntersectionLines()
 	ofstream fout(filename.str().c_str());
 	*/
 	clock_t begin = clock();
-	FLOG("d: " << dim()); FLOG("n: " << size()); FLOG("volume: 100"); FLOG("");
+	LOG("d: " << dim()); LOG("n: " << size()); LOG("volume: 100"); LOG("");
 
 
 	/* 1.*/
-//XXX	LOG("Generating hyperplanes");
+	LOG("Generating hyperplanes");
 	generate_hyperplanes();
 
 	clock_t hp_generated = clock();
 
-	FLOG("hp generated " << double(hp_generated - begin) / CLOCKS_PER_SEC);
+	LOG("hp generated " << double(hp_generated - begin) / CLOCKS_PER_SEC);
 
 	/* 2. */
     OjaLine L(*this);
 	IndexIdentifier Lid,Tid;
 
   step3:
-//XXX	LOG("Choosing initial line");
+	LOG("Choosing initial line");
     L.get_random_through(center_index());
 	Lid.get(L.index());
 	if(Lid.dim() != 1)
@@ -319,7 +304,7 @@ OjaPoint OjaData::medianFollowIntersectionLines()
 	OjaPoint T(*this),hatT(*this);
 	double hatD,D;
 
-//XXX	LOG(counter << " Minimizing " << Lid);  counter++;
+	LOG(counter << " Minimizing " << Lid);  counter++;
 #ifdef GRAPHICS
 	set_line(L.line());
 	wait_if_pause();
@@ -329,7 +314,7 @@ OjaPoint OjaData::medianFollowIntersectionLines()
 	add_orbit(hatT.location());
 #endif
 	Tid.get(hatT.index());
-//XXX	LOG("  Minimum " << Tid << " (object function " << hatD << ")");
+	LOG("  Minimum " << Tid << " (object function " << hatD << ")");
 
 	/* 9. */
 	set<IndexIdentifier> calL;
@@ -351,13 +336,13 @@ OjaPoint OjaData::medianFollowIntersectionLines()
 
 	if(nL > max_searchlines)
 	{
-//XXX		LOG("Too many line possibilities (" << nL << ") at " << Tid);
+		LOG("Too many line possibilities (" << nL << ") at " << Tid);
 		fail_count++;
 		goto step3;
 	}
 
 	/* 15. */
-//XXX	LOG("Generating " << nL << " lines");
+	LOG("Generating " << nL << " lines");
 	
 	set<IndexIdentifier> calLprime;
 	Tid.put_sup_objects(calLprime,1);
@@ -394,10 +379,10 @@ OjaPoint OjaData::medianFollowIntersectionLines()
 		}
 	}
 	Lid.get(L.index());
-//XXX	LOG("  Best direction " << Lid << " (projection " << proj_max << ")");
+	LOG("  Best direction " << Lid << " (projection " << proj_max << ")");
 
 	/* 19. */
-//XXX	LOG(counter << " Minimizing " << Lid);  counter++;
+	LOG(counter << " Minimizing " << Lid);  counter++;
 #ifdef GRAPHICS
 	set_line(L.line());
 	wait_if_pause();
@@ -407,7 +392,7 @@ OjaPoint OjaData::medianFollowIntersectionLines()
 	add_orbit(hatT.location());
 #endif
 	Tid.get(hatT.index());
-//XXX	LOG("  Minimum " << Tid << " (object function " << hatD << ")");
+	LOG("  Minimum " << Tid << " (object function " << hatD << ")");
 
 	/* 20. */
 	calLprime.erase(Lid);
@@ -427,14 +412,23 @@ OjaPoint OjaData::medianFollowIntersectionLines()
 		cout << fail_count << " failures" << endl;
 	}*/
 	
-//XXX	LOG("! Minimum " << Tid << " (" << hatT.location() << ") (object function " << hatD << ")");
-	FLOG("! Minimum " << Tid << " (" << hatT.location() << ") (object function " << hatD << ")");
+	LOG("! Minimum " << Tid << " (" << hatT.location() << ") (object function " << hatD << ")");
 
 	clock_t end = clock();
 	double elapsed_secst = double(end - begin) / CLOCKS_PER_SEC;
+	double elapsed_secsc = double(end - hp_generated) / CLOCKS_PER_SEC;
 	double elapsed_secs = double(end - hp_generated) / CLOCKS_PER_SEC;
 
-	FLOG("counter: " << counter - 1 << "\nTime total: " << elapsed_secst << "\nTime count: " << elapsed_secs);
+	LOG("counter: " << counter - 1 <<
+		"\nTime total: " << elapsed_secst <<
+		"\nTime bounds: " << 0 <<
+		"\nTime count: " << elapsed_secsc <<
+		"\nTime sum: " << elapsed_secs);
+	LOGQ("counter: " << counter - 1 <<
+		"\nTime total: " << elapsed_secst <<
+		"\nTime bounds: " << 0 <<
+		"\nTime count: " << elapsed_secsc <<
+		"\nTime sum: " << elapsed_secs);
 
 //	fout.close();
 

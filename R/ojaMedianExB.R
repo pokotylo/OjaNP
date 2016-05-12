@@ -30,8 +30,8 @@
   action <- 6
   param2 <- control$volume
   param3 <- control$boundedExact  # if FALSE the approximative method is used
-  param4 <- debug <- 0
-  # debug = 1
+  param4 <- 0
+  debug <- control$debug
 
   res<-.C("r_oja", rows, cols, X, vec = outvec, y, as.integer(action), as.double(control$maxlines), as.double(param2), as.integer(param3), as.integer(param4), as.integer(debug),1)
   RES <- res$vec

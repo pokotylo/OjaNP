@@ -15,6 +15,7 @@ function(X, alg="evolutionary", sp=1, na.action=na.fail, control=ojaMedianContro
    storage.mode(cols) <- "integer"
    storage.mode(X) <- "double"
    storage.mode(outvec) <- "double"
+   debug <- control$debug
 
   if(alg != "exact") SEED <- sample(1:5000, sp)
 
@@ -42,7 +43,7 @@ function(X, alg="evolutionary", sp=1, na.action=na.fail, control=ojaMedianContro
     B.inv <- solve(coef(icsX))
     
     action <- 2
-    param4 <- debug <- 0
+    param4 <- 0
     output <- c(rep(0,cols))
     for(i in 1:sp){
     solution<-.C("r_oja", rows, cols, Z, vec = outvec, y, as.integer(action), as.double(control$eps), as.double(control$chi2), as.integer(control$samples), as.integer(param4), as.integer(debug))
@@ -54,18 +55,16 @@ function(X, alg="evolutionary", sp=1, na.action=na.fail, control=ojaMedianContro
   
   else if (alg=="exact"){
     action <- 1
-    param2 <- param3 <- param4 <- debug <- 0
- #   debug = 1
-    res<-.C("r_oja", rows, cols, X, vec = outvec, y, as.integer(action), as.double(control$maxlines), as.double(param2), as.integer(param3), as.integer(param4), as.integer(debug),1)
+    param2 <- param3 <- param4 <- 0
+    res<-.C("r_oja", rows, cols, X, vec = outvec, y, as.integer(action), as.double(control$maxlines), as.double(param2), as.integer(param3), as.integer(param4), as.integer(debug))
     RES <- res$vec
   }  
   else if (alg=="bounded_exact"){
     action <- 6
     param2 <- control$volume
     param3 <- control$boundedExact
-    param4 <- debug <- 0
-    #debug = 1
-    res<-.C("r_oja", rows, cols, X, vec = outvec, y, as.integer(action), as.double(control$maxlines), as.double(param2), as.integer(param3), as.integer(param4), as.integer(debug),1)
+    param4 <- 0
+    res<-.C("r_oja", rows, cols, X, vec = outvec, y, as.integer(action), as.double(control$maxlines), as.double(param2), as.integer(param3), as.integer(param4), as.integer(debug))
     RES <- res$vec
   }
   names(RES)<-colnames(X)
