@@ -47,7 +47,7 @@ If \code{p = NULL}, the value of \code{p} is determined based on the size of the
 
 \details{
 The function computes the Oja sign covariance matrix of the data set \code{X}, that is (if the Oja signs are centered by the Oja median) the covariance matrix of the Oja signs of the 
-data points in \code{X}, taken w.r.t.\  \code{X}. 
+data points in \code{X}, taken w.r.t.  \code{X}. 
 
 For a definition of the \dfn{Oja sign covariance matrix} and its properties see references below.
 The matrix \code{X} needs to have at least two columns and at least as many rows as columns in order to give sensible results. 
@@ -60,7 +60,7 @@ The function offers a subsampling option in order to speed up computation for la
 specified (which defaults to \code{p = NULL}), it is automatically determined based on the dimension of the problem. The function tries to realize a reasonable compromise 
 between accuracy and computing time, that is, for sufficiently small data matrices \code{X} the sampling fraction \code{p} is set to 1. Subsampling is applied to hyperplanes, 
 not data points. A sample is drawn once, all Oja signs are then computed based on this sample. For further details on subsampling see function \code{\link{ojaSign}}. 
-Subsampling is useful. Even for very small \code{p} useable results can be expected, see e.g.\ Example 2.
+Subsampling is useful. Even for very small \code{p} useable results can be expected, see e.g. Example 2.
   
 }
 \value{
@@ -74,7 +74,7 @@ Subsampling is useful. Even for very small \code{p} useable results can be expec
 \cite{Ollila, E., Oja, H., Croux, C. (2003), The affine equivariant sign covariance matrix: Asymptotic behavior and efficiencies, \emph{J. Multivariate Analysis}, \bold{87}, 328--355.}
 }
 
-\author{Daniel Vogel and Claudia \enc{Köllmann}{Kollmann}}
+\author{Daniel Vogel}
 
 \seealso{ 
 \code{\link{ojaSign}}, 
